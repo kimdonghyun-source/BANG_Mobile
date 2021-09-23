@@ -40,10 +40,12 @@ import kr.co.bang.wms.common.SharedData;
 import kr.co.bang.wms.common.Utils;
 import kr.co.bang.wms.custom.CommonFragment;
 import kr.co.bang.wms.honeywell.AidcReader;
+import kr.co.bang.wms.menu.boxlbl.BoxlblFragment;
 import kr.co.bang.wms.menu.popup.LocationListPopup;
 import kr.co.bang.wms.menu.popup.OneBtnPopup;
 import kr.co.bang.wms.menu.popup.TwoBtnPopup;
 import kr.co.bang.wms.menu.stock.StockFragment;
+import kr.co.bang.wms.model.BoxlblListModel;
 import kr.co.bang.wms.model.MoveAskModel;
 import kr.co.bang.wms.model.ResultModel;
 import kr.co.bang.wms.model.StockDetailModel;
@@ -76,13 +78,14 @@ public class MoveAskFragment extends CommonFragment {
     MoveAskModel moveAskModel;
     List<MoveAskModel.Item> moveAskList;
 
-    List<MoveAskModel.Item> itemsList;
+    List<String> mBarcode;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mContext = getActivity();
+        mBarcode = new ArrayList<>();
 
     }
 
@@ -146,11 +149,11 @@ public class MoveAskFragment extends CommonFragment {
                         Utils.Toast(mContext, "입고처를 선택해주세요.");
                         return;
                     }
+
                     if (et_out_wh.getText().toString().equals("")) {
                         Utils.Toast(mContext, "출고처를 선택해주세요.");
                         return;
                     }
-
 
                     if (beg_barcode != null) {
                         if (beg_barcode.equals(barcode_scan)) {
@@ -159,16 +162,10 @@ public class MoveAskFragment extends CommonFragment {
                         }
                     }
 
-                    if (moveAskModel != null) {
-                        for (int i = 0; i < moveAskList.size(); i++) {
-                            if (moveAskList.get(i).getItm_code().equals(barcode_scan)) {
-                                Utils.Toast(mContext, "동일한 아이템코드를 스캔하셨습니다.");
-                                return;
-                            }
-                        }
-
+                    if(mBarcode.contains(barcode_scan)){
+                        Utils.Toast(mContext, "동일한 아이템코드를 스캔하셨습니다.");
+                        return;
                     }
-
 
                     moveaskScan();
                     beg_barcode = barcode_scan;
@@ -176,8 +173,6 @@ public class MoveAskFragment extends CommonFragment {
                 }
             }
         });
-
-
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -206,21 +201,15 @@ public class MoveAskFragment extends CommonFragment {
                         Utils.Toast(mContext, "입고처를 선택해주세요.");
                         return;
                     }
-
                     if (et_out_wh.getText().toString().equals("")) {
                         Utils.Toast(mContext, "출고처를 선택해주세요.");
                         return;
                     }
-
                     if (moveAskModel == null) {
                         Utils.Toast(mContext, "이동처리 할 물품을 스캔해주세요.");
                         return;
                     }
-
-
                     move_scan_save();
-
-
             }
 
         }
@@ -371,7 +360,7 @@ public class MoveAskFragment extends CommonFragment {
                     Utils.Log("model ==> :" + new Gson().toJson(model));
                     if (moveAskModel != null) {
                         if (moveAskModel.getFlag() == ResultModel.SUCCESS) {
-                            moveAskList = moveAskModel.getItems();
+                            //moveAskList = moveAskModel.getItems();
                             if (model.getItems().size() > 0) {
 
                                 for (int i = 0; i < model.getItems().size(); i++) {
@@ -382,14 +371,15 @@ public class MoveAskFragment extends CommonFragment {
                                 }
 
                                 mAdapter.notifyDataSetChanged();
+                                mBarcode.add(barcode_scan);
 
                             }
 
                         } else {
                             Utils.Toast(mContext, model.getMSG());
                             if (moveAskList != null) {
-                                moveAskList.clear();
-                                mAdapter.notifyDataSetChanged();
+                                /*moveAskList.clear();
+                                mAdapter.notifyDataSetChanged();*/
                             }
                         }
                     }
@@ -423,14 +413,19 @@ public class MoveAskFragment extends CommonFragment {
         for (MoveAskModel.Item item : items) {
             JsonObject obj = new JsonObject();
 
-            if(item.getInput_qty() <= 0){
+            if (item.getInput_qty() > item.getInv_qty_out()){
+                Utils.Toast(mContext, "이동 수량이 초과되었습니다.");
+                return;
+            }else {
 
-            }else{
-                obj.addProperty("itm_code", item.getItm_code());
-                obj.addProperty("mreq_qty", item.getInput_qty());
-                list.add(obj);
+                if (item.getInput_qty() <= 0) {
+
+                } else {
+                    obj.addProperty("itm_code", item.getItm_code());
+                    obj.addProperty("mreq_qty", item.getInput_qty());
+                    list.add(obj);
+                }
             }
-
 
         }
 
@@ -505,5 +500,8 @@ public class MoveAskFragment extends CommonFragment {
         });
 
     }
+
+
+
 
 }//Close Fragemnet

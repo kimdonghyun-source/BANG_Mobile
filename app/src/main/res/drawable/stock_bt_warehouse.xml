@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/stock_warehouse_select1" android:state_checked="true"/>
+    <item android:drawable="@drawable/stock_warehouse_select1" android:state_selected="true"/>
+    <item android:drawable="@drawable/strock_warehouse1"/>
+</selector>

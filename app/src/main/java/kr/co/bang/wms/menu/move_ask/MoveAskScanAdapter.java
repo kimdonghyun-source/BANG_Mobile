@@ -23,109 +23,97 @@ import kr.co.bang.wms.model.MoveAskModel;
 
 public class MoveAskScanAdapter extends RecyclerView.Adapter<MoveAskScanAdapter.ViewHolder> {
 
-        List<MoveAskModel.Item> itemsList;
-        Activity mActivity;
-        Handler mHandler = null;
+    List<MoveAskModel.Item> itemsList;
+    Activity mActivity;
+    Handler mHandler = null;
 
-        public MoveAskScanAdapter(Activity context) {
-            mActivity = context;
-            itemsList = new ArrayList<>();
-        }
+    public MoveAskScanAdapter(Activity context) {
+        mActivity = context;
+        itemsList = new ArrayList<>();
+    }
 
-        public void setData(List<MoveAskModel.Item> item){
-            itemsList = item;
-        }
+    public void setData(List<MoveAskModel.Item> item){
+        itemsList = item;
+    }
 
-        public void addData(MoveAskModel.Item item) {
-            if (itemsList == null) itemsList = new ArrayList<>();
-            itemsList.add(item);
-        }
+    public void addData(MoveAskModel.Item item) {
+        if (itemsList == null) itemsList = new ArrayList<>();
+        itemsList.add(item);
+    }
 
-        public void clearData(){
-            itemsList.clear();
-        }
+    public void clearData(){
+        itemsList.clear();
+    }
 
-        public void setSumHandler(Handler h){
-            this.mHandler = h;
-        }
+    public void setSumHandler(Handler h){
+        this.mHandler = h;
+    }
 
-        public List<MoveAskModel.Item> getData(){
-            return itemsList;
-        }
+    public List<MoveAskModel.Item> getData(){
+        return itemsList;
+    }
 
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
-            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_movescan_list, viewGroup, false);
-            ViewHolder holder = new ViewHolder(v);
-            return holder;
-        }
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_movescan_list, viewGroup, false);
+        ViewHolder holder = new ViewHolder(v);
+        return holder;
+    }
 
-        @Override
-        public void onBindViewHolder(final ViewHolder holder, final int position) {
+    @Override
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-            final MoveAskModel.Item item = itemsList.get(position);
+        final MoveAskModel.Item item = itemsList.get(position);
 
-//        holder.tv_lot.setText("LOT NO. : "+item.getLot_no());
-//        holder.tv_count.setText(Utils.setComma(item.getInv_qty()));
-//        holder.tv_loc.setText("LOC : "+item.getLocation_code());
-            //Log.d("JeLib",""+position+":"+ Utils.setComma(item.getInv_qty()));
-            holder.itm_name.setText(item.getItm_name());
-            holder.inv_qty_in.setText(Integer.toString(item.getInv_qty_in()));
-            holder.inv_qty_out.setText(Integer.toString(item.getInv_qty_out()));
-            holder.et_count.setText(""+item.getInput_qty());
 
-            holder.et_count.addTextChangedListener(new TextWatcher(){
-                String result="";
+        holder.itm_name.setText(item.getItm_name());
+        holder.inv_qty_in.setText(Integer.toString(item.getInv_qty_in()));
+        holder.inv_qty_out.setText(Integer.toString(item.getInv_qty_out()));
+        holder.et_count.setText(Integer.toString(item.getInput_qty()));
 
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        holder.et_count.addTextChangedListener(new TextWatcher(){
+            String result="";
 
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.d("JeLib","---------------------------");
+                if(s.toString().length() > 0 && !s.toString().equals(result)) {     // StackOverflow를 막기위해,
+                    result = s.toString();   // 에딧텍스트의 값을 변환하여, result에 저장.
+
+                    int cnt = Utils.stringToInt(result);
+
+                    holder.et_count.setText(result);    // 결과 텍스트 셋팅.
+                    holder.et_count.setSelection(result.length());     // 커서를 제일 끝으로 보냄.
+
+                    //입력된 수량을 list에 넣어줌
+                    itemsList.get(holder.getAdapterPosition()).setInput_qty(cnt);
                 }
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                }
-                @Override
-                public void afterTextChanged(Editable s) {
-                    Log.d("JeLib","---------------------------");
-                    if(s.toString().length() > 0 && !s.toString().equals(result)) {     // StackOverflow를 막기위해,
-                        result = s.toString();   // 에딧텍스트의 값을 변환하여, result에 저장.
 
-                        int cnt = Utils.stringToInt(result);
+            }
+        });
+    }
 
-                        //아이템 수량 초과시
-                        if(cnt > item.getInv_qty_out()){
-                            cnt = item.getInv_qty_out();
-                            result = String.valueOf((int)item.getInv_qty_out());
-                        }
+    @Override
+    public int getItemCount() {
+        return (null == itemsList ? 0 : itemsList.size());
+    }
 
-                        holder.et_count.setText(result);    // 결과 텍스트 셋팅.
-                        holder.et_count.setSelection(result.length());     // 커서를 제일 끝으로 보냄.
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
-                        //입력된 수량을 list에 넣어줌
-                        itemsList.get(holder.getAdapterPosition()).setInput_qty(cnt);
-                    }
-                    if(Utils.isEmpty(s.toString())){
-                        itemsList.get(holder.getAdapterPosition()).setInput_qty(0);
-                    }
-                    //mHandler.sendEmptyMessage(1);
-                }
-            });
-        }
+        TextView itm_name;
+        TextView inv_qty_in;
+        TextView inv_qty_out;
+        EditText et_count;
 
-        @Override
-        public int getItemCount() {
-            return (null == itemsList ? 0 : itemsList.size());
-        }
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-
-            TextView itm_name;
-            TextView inv_qty_in;
-            TextView inv_qty_out;
-            EditText et_count;
-
-            public ViewHolder(View view) {
-                super(view);
+        public ViewHolder(View view) {
+            super(view);
 
 //            tv_lot = view.findViewById(R.id.tv_lot);
 //            tv_count = view.findViewById(R.id.tv_count);
@@ -133,11 +121,11 @@ public class MoveAskScanAdapter extends RecyclerView.Adapter<MoveAskScanAdapter.
 //            et_count = view.findViewById(R.id.et_count);
 
 
-                itm_name = view.findViewById(R.id.itm_name);
-                inv_qty_in = view.findViewById(R.id.tv_in_qty);
-                inv_qty_out = view.findViewById(R.id.tv_out_qty);
-                et_count = view.findViewById(R.id.et_count);
+            itm_name = view.findViewById(R.id.itm_name);
+            inv_qty_in = view.findViewById(R.id.tv_in_qty);
+            inv_qty_out = view.findViewById(R.id.tv_out_qty);
+            et_count = view.findViewById(R.id.et_count);
 
-            }
         }
     }
+}

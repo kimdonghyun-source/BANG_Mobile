@@ -2,18 +2,18 @@ package kr.co.bang.wms.model;
 
 import java.util.List;
 
-public class StockModel extends ResultModel {
-    List<stockModel> items;
+public class StockStoreModel extends ResultModel{
+    List<StockStoreModel.Item>items;
 
-    public List<stockModel> getItems() {
+    public List<Item> getItems() {
         return items;
     }
 
-    public void setItems(List<stockModel> items) {
+    public void setItems(List<Item> items) {
         this.items = items;
     }
 
-    public class stockModel extends ResultModel{
+    public class Item extends ResultModel{
         //사업장
         String corp_code;
         //조사일자
@@ -97,3 +97,5 @@ public class StockModel extends ResultModel {
     }
 
 }
+
+

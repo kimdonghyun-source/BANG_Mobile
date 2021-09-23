@@ -104,16 +104,18 @@ public class BoxlblFragment extends CommonFragment {
                     barcode_scan = barcode;
                     et_from.setText(barcode);
 
-                    if (beg_barcode != null){
+                    if (beg_barcode != null) {
                         if (beg_barcode.equals(barcode_scan)) {
                             Utils.Toast(mContext, "동일한 바코드를 스캔하였습니다.");
                             return;
                         }
                     }
 
-                    if (mBoxListModel != null){
-                        for (int i=0; i < mBoxListModel.size(); i++){
-                            if (mBoxListModel.get(i).getLot_no().equals(barcode_scan)){
+                    if (mBoxListModel != null) {
+
+                        for (int i = 0; i < mBoxListModel.size(); i++) {
+
+                            if (mBoxListModel.get(i).getLot_no().equals(barcode_scan)) {
                                 Utils.Toast(mContext, "동일한 시리얼을 스캔하셨습니다.");
                                 return;
                             }
@@ -126,15 +128,15 @@ public class BoxlblFragment extends CommonFragment {
         });
     }
 
-    View.OnClickListener onClickListener  = new View.OnClickListener() {
+    View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.bt_next :
+                case R.id.bt_next:
                     if (mBoxModel != null) {
                         request_box_lbl_save();
                     }
-                   break;
+                    break;
 
             }
 
@@ -160,14 +162,13 @@ public class BoxlblFragment extends CommonFragment {
                     if (mBoxModel != null) {
                         if (mBoxModel.getFlag() == ResultModel.SUCCESS) {
 
-                            if (mBoxListModel != null){
-                                for (int i=0; i < mBoxListModel.size(); i++){
-                                    if (!mBoxListModel.get(i).getItm_code().equals(mBoxModel.getItems().get(0).getItm_code())){
+                            if (mBoxListModel != null) {
+                                for (int i = 0; i < mBoxListModel.size(); i++) {
+                                    if (!mBoxListModel.get(i).getItm_code().equals(mBoxModel.getItems().get(0).getItm_code())) {
                                         Utils.Toast(mContext, "동일한 아이템을 스캔해주세요.");
                                         return;
                                     }
                                 }
-
                             }
 
                             for (int i = 0; i < model.getItems().size(); i++) {
@@ -178,7 +179,7 @@ public class BoxlblFragment extends CommonFragment {
                             //mBoxListModel = model.getItems();
                             mAdapter.notifyDataSetChanged();
                             inVenListView.setAdapter(mAdapter);
-                            tot_scan.setText("스캔총수량: "+ mAdapter.getCount());
+                            tot_scan.setText("스캔총수량: " + mAdapter.getCount());
 
                         } else {
                             Utils.Toast(mContext, model.getMSG());
@@ -281,7 +282,6 @@ public class BoxlblFragment extends CommonFragment {
             });
 
 
-
             return v;
         }
 
@@ -290,10 +290,8 @@ public class BoxlblFragment extends CommonFragment {
             TextView serial_no;
 
 
-
         }
     }//Close ScanAdapter
-
 
     /**
      * 실사처리 저장
@@ -340,7 +338,6 @@ public class BoxlblFragment extends CommonFragment {
                                     }
                                 }
                             });
-
 
 
                         } else {

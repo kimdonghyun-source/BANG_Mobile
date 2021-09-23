@@ -18,6 +18,7 @@ import kr.co.bang.wms.model.MatOutDetailGet;
 import kr.co.bang.wms.model.MatOutDetailModel;
 import kr.co.bang.wms.model.MatOutListModel;
 import kr.co.bang.wms.model.MatOutSerialScanModel;
+import kr.co.bang.wms.model.MatScanCntModel;
 import kr.co.bang.wms.model.MaterialLocAndLotModel;
 import kr.co.bang.wms.model.MaterialOutDetailModel;
 import kr.co.bang.wms.model.MaterialOutListModel;
@@ -32,6 +33,7 @@ import kr.co.bang.wms.model.SerialLocationModel;
 import kr.co.bang.wms.model.SerialNumberModel;
 import kr.co.bang.wms.model.StockDetailModel;
 import kr.co.bang.wms.model.StockModel;
+import kr.co.bang.wms.model.StockStoreModel;
 import kr.co.bang.wms.model.UserInfoModel;
 import kr.co.bang.wms.model.WarehouseModel;
 import okhttp3.OkHttpClient;
@@ -150,12 +152,23 @@ public interface ApiClientService {
     );
 
     /**
-     * 재고조사 리스트 조회
+     * 재고조사 리스트 조회(창고)
      * @param proc 프로시저
      * @param date 조회일자
      * */
     @POST("R2JsonProc.asp")
     Call<StockModel> stklist(
+            @Query("proc") String proc,
+            @Query("param1") String date
+    );
+
+    /**
+     * 재고조사 리스트 조회(대리점)
+     * @param proc 프로시저
+     * @param date 조회일자
+     * */
+    @POST("R2JsonProc.asp")
+    Call<StockStoreModel> stklist2(
             @Query("proc") String proc,
             @Query("param1") String date
     );
@@ -175,6 +188,25 @@ public interface ApiClientService {
             @Query("param2") String date,
             @Query("param3") String wh_code,
             @Query("param4") String no
+    );
+
+    /**
+     * 재고조사 시리얼 스캔
+     * @param proc 프로시저
+     * @param serial 시리얼번호
+     * @param date 일자
+     * @param wh_code 창고
+     * @param no 순번
+     * @param date2 재고기준일
+     * */
+    @POST("R2JsonProc.asp")
+    Call<StockDetailModel> stk_store_serial_list(
+            @Query("proc") String proc,
+            @Query("param1") String serial,
+            @Query("param2") String date,
+            @Query("param3") String wh_code,
+            @Query("param4") String no,
+            @Query("param5") String date2
     );
 
     /**
@@ -266,6 +298,22 @@ public interface ApiClientService {
             @Query("param1") String mac,
             @Query("param2") String no,
             @Query("param3") String itm
+
+    );
+
+    /**
+     * 스캔내역 카운트
+     * @param proc 프로시저
+     * @param mac 맥주소
+     * @param no 이동요청번호
+     * @param barcode 바코드스캔
+     * */
+    @POST("R2JsonProc.asp")
+    Call<MatScanCntModel> matScanCnt(
+            @Query("proc") String proc,
+            @Query("param1") String mac,
+            @Query("param2") String no,
+            @Query("param3") String barcode
 
     );
 

@@ -52,6 +52,7 @@ import kr.co.bang.wms.model.MatOutDetailGet;
 import kr.co.bang.wms.model.MatOutDetailModel;
 import kr.co.bang.wms.model.MatOutListModel;
 import kr.co.bang.wms.model.MatOutSerialScanModel;
+import kr.co.bang.wms.model.MatScanCntModel;
 import kr.co.bang.wms.model.MorSerialScan;
 import kr.co.bang.wms.model.ResultModel;
 import kr.co.bang.wms.model.WarehouseModel;
@@ -74,6 +75,8 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
     List<MatOutDetailGet.Item> mDetailGetList;
     MatOutDetailModel detailModel;
     MatOutSerialScanModel mSerialModel;
+    MatScanCntModel mScanCntModel;
+    List<MatScanCntModel.Items> mCntList;
     List<MatOutDetailModel.Item> mDetailList;
     List<MatOutSerialScanModel.Item> mSerialList;
     MatOutSerialScanModel.Item mserialItems;
@@ -95,11 +98,15 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
     List<WarehouseModel.Items> mWarehouseList;
     ImageButton bt_wh, bt_next;
     BaseActivity mBase;
+    List<String> mBarcode;
+    List<String> LBarcode;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getActivity();
+        mBarcode = new ArrayList<>();
+        LBarcode = new ArrayList<>();
 
 
     }//Close onCreate
@@ -112,6 +119,7 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
         WifiManager manager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = manager.getConnectionInfo();
         address = info.getMacAddress();
+
 
         req_dpt_name = v.findViewById(R.id.req_dpt_name);
         req_code = v.findViewById(R.id.req_code);
@@ -159,8 +167,6 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
         intent.putExtra("args", extras);
 
         startActivityForResult(intent, 100);
-
-
     }
 
     @Override
@@ -174,6 +180,16 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
                     BarcodeReadEvent event = (BarcodeReadEvent) msg.obj;
                     String barcode = event.getBarcodeData();
                     barcode_scan = barcode;
+
+                    if (mBarcode.contains(barcode)) {
+                        Utils.Toast(mContext, "동일한 바코드를 스캔하셨습니다.");
+                        return;
+                    }
+
+                    if (LBarcode.contains(barcode)) {
+                        Utils.Toast(mContext, "동일한 바코드를 스캔하셨습니다.");
+                        return;
+                    }
 
                     if (beg_barcode != null) {
                         if (beg_barcode.equals(barcode_scan)) {
@@ -201,11 +217,15 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
                     }
 
                     if (barcode_scan.length() == 17) {
-                        MatSerialScan();
                         beg_barcode = barcode;
+                        MatSerialCount();
+                        //MatSerialScan();
+
                     } else {
-                        MatSerialScanItem();
                         beg_barcode = barcode;
+                        MatSerialCount();
+                        //MatSerialScanItem();
+
                     }
 
                 }
@@ -321,6 +341,8 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
                     Utils.Log("model scan ==> :" + new Gson().toJson(model));
                     if (mSerialModel != null) {
                         if (mSerialModel.getFlag() == ResultModel.SUCCESS) {
+                            //MatSerialCountBox("sp_pda_mat_out_scan_cnt", address, mOrder.getReq_mat_code(), mSerialModel.getItems().get(0).getLot_no());
+
 
                             //moveList = model.getItems();
                             if (model.getItems().size() > 0) {
@@ -369,7 +391,9 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
                                 mListAdapter.notifyDataSetChanged();
                                 mAdapter.notifyDataSetChanged();
                                 scanAdapter.notifyDataSetChanged();
+                                LBarcode.add(barcode_scan);
 
+                                //MatSerialCount();
                                 requestScan();
                             }
 
@@ -454,7 +478,9 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
                                 mListAdapter.notifyDataSetChanged();
                                 mAdapter.notifyDataSetChanged();
                                 scanAdapter.notifyDataSetChanged();
+                                mBarcode.add(barcode_scan);
 
+                                //MatSerialCount();
                                 requestScanItem();
                             }
 
@@ -471,6 +497,55 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
 
             @Override
             public void onFailure(Call<MatOutSerialScanModel> call, Throwable t) {
+                Utils.LogLine(t.getMessage());
+                Utils.Toast(mContext, getString(R.string.error_network));
+            }
+        });
+    }
+
+    /**
+     * 중복데이터 카운트 체크
+     */
+    private void MatSerialCount() {
+        ApiClientService service = ApiClientService.retrofit.create(ApiClientService.class);
+
+        Call<MatScanCntModel> call = service.matScanCnt("sp_pda_mat_out_scan_cnt", address, mOrder.getReq_mat_code(), barcode_scan);
+
+        call.enqueue(new Callback<MatScanCntModel>() {
+            @Override
+            public void onResponse(Call<MatScanCntModel> call, Response<MatScanCntModel> response) {
+
+                if (response.isSuccessful()) {
+                    mScanCntModel = response.body();
+                    final MatScanCntModel model = response.body();
+                    Utils.Log("model get ==> :" + new Gson().toJson(model));
+                    if (mScanCntModel != null) {
+                        if (mScanCntModel.getFlag() == ResultModel.SUCCESS) {
+                            mCntList = model.getItems();
+                            if (mCntList != null) {
+                                for (int i = 0; i < model.getItems().size(); i++) {
+                                    MatScanCntModel.Items item = (MatScanCntModel.Items) model.getItems().get(i);
+                                    if (item.getR_CNT() == 0) {
+                                        //MatSerialScanItem();
+                                        if (barcode_scan.length() == 17) {
+                                            MatSerialScan();
+                                        } else {
+                                            MatSerialScanItem();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    Utils.LogLine(response.message());
+                    Utils.Toast(mContext, response.code() + " : " + response.message());
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<MatScanCntModel> call, Throwable t) {
                 Utils.LogLine(t.getMessage());
                 Utils.Toast(mContext, getString(R.string.error_network));
             }
@@ -505,18 +580,10 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
                                     mDetailGetList = model.getItems();
                                     mListAdapter.notifyDataSetChanged();
                                 }
-
-
                             }
-
 
                         } else {
 
-                           /* Utils.Toast(mContext, model.getMSG());
-                            if (mDetailGetList != null){
-                                mDetailGetList.clear();
-                                mAdapter.notifyDataSetChanged();
-                            }*/
                         }
                     }
                 } else {
@@ -1131,16 +1198,14 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
         String userID = (String) SharedData.getSharedData(mContext, SharedData.UserValue.USER_ID.name(), "");
         JsonArray list = new JsonArray();
         List<MatOutSerialScanModel.Item> items = scanAdapter.getData();
-        //for (MatOutSerialScanModel.Item item : items) {
+
         JsonObject obj = new JsonObject();
-        //obj.addProperty("itm_code", item.getItm_code());
+
         obj.addProperty("itm_code", mSerialModel.getItems().get(0).getItm_code());
-        //obj.addProperty("serial_no", item.getLot_no());
         obj.addProperty("serial_no", barcode_scan);
-        //obj.addProperty("serial_qty", item.getInv_qty());
         obj.addProperty("serial_qty", mSerialModel.getItems().get(0).getInv_qty());
+
         list.add(obj);
-        //}
 
         json.addProperty("p_mac_ad", address);
         json.addProperty("p_corp_code", detailModel.getItems().get(0).getCorp_code());

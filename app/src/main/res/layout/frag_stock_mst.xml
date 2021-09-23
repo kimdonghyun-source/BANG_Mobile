@@ -9,13 +9,36 @@
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
         android:paddingLeft="15dp">
-
-
     </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/bt_wh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:src="@drawable/stock_bt_warehouse" />
+
+        <ImageButton
+            android:id="@+id/bt_store"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:src="@drawable/stock_bt_sotre" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:paddingLeft="15dp"
         android:orientation="horizontal">
 
@@ -42,7 +65,15 @@
 
         <Button
             android:text="조회"
-            android:id="@+id/btn_search"
+            android:id="@+id/btn_ware_search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"/>
+
+        <Button
+            android:visibility="gone"
+            android:text="조회"
+            android:id="@+id/btn_ware_search1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"/>
@@ -76,8 +107,13 @@
         android:id="@+id/stock_listView_mst"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        />
+        android:layout_weight="1"/>
+
+    <ListView
+        android:id="@+id/stock_listView_mst1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
     <LinearLayout
         android:id="@+id/ll_bottom"

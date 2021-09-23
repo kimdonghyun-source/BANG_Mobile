@@ -22,8 +22,14 @@ public class StockDetailModel extends ResultModel{
         String lot_no;
         //창고코드
         String wh_code;
+        //창고명
+        String wh_name;
         //재고수량
         int inv_qty;
+        //모델
+        String g_name3;
+        //표기시리얼
+        String lot_no_mix;
 
         public String getItm_code() {
             return itm_code;
@@ -63,6 +69,30 @@ public class StockDetailModel extends ResultModel{
 
         public void setInv_qty(int inv_qty) {
             this.inv_qty = inv_qty;
+        }
+
+        public String getG_name3() {
+            return g_name3;
+        }
+
+        public void setG_name3(String g_name3) {
+            this.g_name3 = g_name3;
+        }
+
+        public String getLot_no_mix() {
+            return lot_no_mix;
+        }
+
+        public void setLot_no_mix(String lot_no_mix) {
+            this.lot_no_mix = lot_no_mix;
+        }
+
+        public String getWh_name() {
+            return wh_name;
+        }
+
+        public void setWh_name(String wh_name) {
+            this.wh_name = wh_name;
         }
     }
 }

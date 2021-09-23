@@ -57,7 +57,7 @@ public class InventoryFragment extends CommonFragment {
     TextView tv_box_serial, tv_box_qty, tv_empty, tv_box_check_qty;
 
     ImageButton bt_next;
-    String barcodeScan;
+    String barcodeScan, beg_barcode = null;
 
     InvenModel minvenModel;
     List<InvenModel.Inven> invenList;
@@ -114,8 +114,24 @@ public class InventoryFragment extends CommonFragment {
                     String barcode = event.getBarcodeData();
                     et_from.setText(barcode);
                     barcodeScan = barcode;
+
+                    if (beg_barcode != null){
+                        if (beg_barcode.equals(barcodeScan)) {
+                            Utils.Toast(mContext, "동일한 바코드를 스캔하였습니다.");
+                            return;
+                        }
+                    }
+
+                    if (invenList != null){
+                        if (invenList.get(0).getSerial_no().equals(barcodeScan)) {
+                            Utils.Toast(mContext, "동일한 바코드를 스캔하였습니다.");
+                            return;
+                        }
+                    }
+
                     if (barcode.length() == 17) {
                         pdaSerialScan();
+                        beg_barcode = barcodeScan;
                     } else {
                         mAdapter.notifyDataSetChanged();
                     }
@@ -186,7 +202,7 @@ public class InventoryFragment extends CommonFragment {
                                 wh_code = invenList.get(0).getWh_code();
 
                                 //박스시리얼 17자리
-                                //품목시리얼 13자리리
+                                //품목시리얼 13자리
                                 //InvenModel.Inven item = (InvenModel.Inven) model.getItems().get(0);
                                 float count = 0;
                                 for (int i = 0; i < model.getItems().size(); i++) {
@@ -301,15 +317,6 @@ public class InventoryFragment extends CommonFragment {
             holder.wh_code.setText(data.getWh_code());
             holder.picking.setText(data.getPicking_yn());
 
-            /*v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Message msg = mHandler.obtainMessage();
-                    msg.what = 1;
-                    msg.obj = data;
-                    mHandler.sendMessage(msg);
-                }
-            });*/
 
             //일치하면 리스트 색 변경
             int qty = 0;
@@ -382,8 +389,6 @@ public class InventoryFragment extends CommonFragment {
         String userID = (String) SharedData.getSharedData(mContext, SharedData.UserValue.USER_ID.name(), "");
         JsonArray list = new JsonArray();
         List<InvenModel.Inven> items = mAdapter.getData();
-
-
 
         for (InvenModel.Inven item : items) {
             JsonObject obj = new JsonObject();

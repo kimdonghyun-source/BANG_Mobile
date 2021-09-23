@@ -114,6 +114,7 @@ public class LoginActivity extends CommonCompatActivity {
         }
         super.onDestroy();
     }
+
     private void requestLogin() {
         ApiClientService service = ApiClientService.retrofit.create(ApiClientService.class);
 

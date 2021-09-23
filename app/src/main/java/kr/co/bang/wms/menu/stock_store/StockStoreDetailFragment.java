@@ -1,7 +1,5 @@
-package kr.co.bang.wms.menu.stock;
+package kr.co.bang.wms.menu.stock_store;
 
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -19,8 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -34,49 +31,52 @@ import kr.co.bang.wms.R;
 import kr.co.bang.wms.common.SharedData;
 import kr.co.bang.wms.common.Utils;
 import kr.co.bang.wms.custom.CommonFragment;
-import kr.co.bang.wms.custom.SoundManager;
 import kr.co.bang.wms.honeywell.AidcReader;
-import kr.co.bang.wms.menu.house_new_move.HouseNewMoveDetailFragment;
 import kr.co.bang.wms.menu.popup.OneBtnPopup;
 import kr.co.bang.wms.menu.popup.TwoBtnPopup;
-import kr.co.bang.wms.model.InvenModel;
-import kr.co.bang.wms.model.MatOutDetailModel;
+import kr.co.bang.wms.menu.stock.StockFragment;
+import kr.co.bang.wms.menu.stock.StockFragmentDetail;
 import kr.co.bang.wms.model.ResultModel;
 import kr.co.bang.wms.model.StockDetailModel;
 import kr.co.bang.wms.model.StockModel;
+import kr.co.bang.wms.model.StockStoreModel;
 import kr.co.bang.wms.network.ApiClientService;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+import okhttp3.internal.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class StockFragmentDetail extends CommonFragment {
+public class StockStoreDetailFragment extends CommonFragment {
 
     Context mContext;
-    TextView tv_empty, tv_stk_remark, tv_stk_date, tv_stk_wh_code, tv_list_cnt;
-    StockModel mStockmodel;
+    TextView tv_stk_wh_code, tv_empty, tv_store_wh, tv_wh_code, tv_g_name3, tv_result, tv_lot_no_mix;
+    String barcode, beg_barcode;
+    EditText et_from;
+    StockStoreModel mStockmodel;
     int mPosition = -1;
-    StockModel.stockModel mOrder;
+    StockStoreModel.Item mOrder;
     StockDetailModel mStockDetailmodel;
     List<StockDetailModel.stockDetailModel> mStockDetailList;
     ListAdapter mAdapter;
     ListView stockDetail_listView;
-    String barcode, beg_barcode = null;
-    EditText et_from;
-    OneBtnPopup mOneBtnPopup;
-    TwoBtnPopup mTwoBtnPopup;
-    ImageButton bt_next;
-
+    int count = 0;
+    List<String> mBarcode;
+    String mLocation;
     private SoundPool sound_pool;
     int soundId;
     MediaPlayer mediaPlayer;
+    TwoBtnPopup mTwoBtnPopup;
+    OneBtnPopup mOneBtnPopup;
+    ImageButton bt_next;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getActivity();
+        mBarcode = new ArrayList<>();
 
 
     }//Close onCreate
@@ -84,38 +84,34 @@ public class StockFragmentDetail extends CommonFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.frag_stock_datail, container, false);
+        View v = inflater.inflate(R.layout.frag_stock_store, container, false);
 
-        tv_empty = v.findViewById(R.id.tv_empty);
-        tv_stk_date = v.findViewById(R.id.tv_stk_date);
-        tv_stk_remark = v.findViewById(R.id.tv_stk_remark);
         tv_stk_wh_code = v.findViewById(R.id.tv_stk_wh_code);
-        stockDetail_listView = v.findViewById(R.id.stockDetail_listView);
+        tv_empty = v.findViewById(R.id.tv_empty);
         et_from = v.findViewById(R.id.et_from);
+        tv_store_wh = v.findViewById(R.id.tv_store_wh);
+        tv_wh_code = v.findViewById(R.id.tv_wh_code);
+        tv_g_name3 = v.findViewById(R.id.tv_g_name3);
+        tv_result = v.findViewById(R.id.tv_result);
+        tv_lot_no_mix = v.findViewById(R.id.tv_lot_no_mix);
         bt_next = v.findViewById(R.id.bt_next);
-        tv_list_cnt = v.findViewById(R.id.tv_list_cnt);
-        mAdapter = new ListAdapter();
-        stockDetail_listView.setAdapter(mAdapter);
 
         bt_next.setOnClickListener(onClickListener);
 
+        stockDetail_listView = v.findViewById(R.id.stockDetail_listView);
+        mAdapter = new ListAdapter();
+        stockDetail_listView.setAdapter(mAdapter);
+
         Bundle arguments = getArguments();
 
-        mStockmodel = (StockModel) arguments.getSerializable("model");
+        mStockmodel = (StockStoreModel) arguments.getSerializable("model");
         mPosition = arguments.getInt("position");
         mOrder = mStockmodel.getItems().get(mPosition);
-        tv_stk_date.setText(mOrder.getStk_date());
-        tv_stk_wh_code.setText(mOrder.getWh_name());
-        tv_stk_remark.setText(mOrder.getRemark());
+
+        tv_store_wh.setText(mOrder.getWh_name());
 
         sound_pool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
         soundId = sound_pool.load(mContext, R.raw.beepum, 1);
-
-/*        soundPool = new SoundPool.Builder().build();
-        soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC,0);
-        soundManager = new SoundManager(mContext,soundPool);
-        soundManager.addSound(0,R.raw.beep);*/
-
 
         return v;
 
@@ -142,16 +138,16 @@ public class StockFragmentDetail extends CommonFragment {
                         }
                     }
 
-
-                    if (mStockDetailList != null) {
-                        if (mStockDetailList.get(0).getLot_no().equals(barcode)) {
-                            Utils.Toast(mContext, "동일한 바코드를 스캔하였습니다.");
-                            return;
-                        }
+                    if (mBarcode.contains(barcode)) {
+                        Utils.Toast(mContext, "동일한 SerialNo를 스캔하셨습니다.");
+                        return;
                     }
+
+                    mLocation = barcode;
+                    beg_barcode = barcode;
                     StockListSearch();
 
-                    beg_barcode = barcode;
+
                 }
             }
         });
@@ -177,12 +173,13 @@ public class StockFragmentDetail extends CommonFragment {
     };
 
     /**
-     * 재고조사 리스트 조회
+     * 재고조사(대리점) 리스트 조회
      */
     private void StockListSearch() {
         ApiClientService service = ApiClientService.retrofit.create(ApiClientService.class);
 
-        Call<StockDetailModel> call = service.stk_serial_list("sp_pda_stk_scan", barcode, mOrder.getStk_date(), mOrder.getWh_code(), String.valueOf(mOrder.getStk_no1()));
+        Call<StockDetailModel> call = service.stk_store_serial_list("sp_pda_stk_scan_c", barcode, mOrder.getStk_date(),
+                mOrder.getWh_code(), String.valueOf(mOrder.getStk_no1()), mOrder.getInv_date());
 
         call.enqueue(new Callback<StockDetailModel>() {
             @Override
@@ -203,21 +200,27 @@ public class StockFragmentDetail extends CommonFragment {
                                 }
 
                                 mAdapter.notifyDataSetChanged();
+                                mBarcode.add(mLocation);
+
+                                tv_wh_code.setText(model.getItems().get(0).getWh_name());
+                                tv_g_name3.setText(model.getItems().get(0).getG_name3());
+                                tv_lot_no_mix.setText(model.getItems().get(0).getLot_no_mix());
+
                             }
 
-                            if (mStockDetailmodel != null) {
-                                tv_list_cnt.setText(String.valueOf(mStockDetailList.size()));
-                            }
-
-                        } else {
-
-
+                            if (mOrder.getWh_code().equals(model.getItems().get(0).getWh_code())) {
+                                int m_color = ContextCompat.getColor(mContext, R.color.color_008998);
+                                tv_result.setText("일치");
+                                tv_result.setTextColor(m_color);
+                            }else{
+                                int m_color = ContextCompat.getColor(mContext, R.color.red);
+                                tv_result.setText("불일치");
+                                tv_result.setTextColor(m_color);
                                 sound_pool.play(soundId, 1f, 1f, 0, 1, 1f);
                                 mediaPlayer = MediaPlayer.create(mContext, R.raw.beepum);
                                 mediaPlayer.start();
-
-
-
+                            }
+                        } else {
                             Utils.Toast(mContext, model.getMSG());
 
                             if (mStockDetailList != null) {
@@ -242,101 +245,6 @@ public class StockFragmentDetail extends CommonFragment {
             }
         });
     }
-
-    /**
-     * 재고실사저장
-     */
-    private void stk_scan_save() {
-
-        ApiClientService service = ApiClientService.retrofit.create(ApiClientService.class);
-        JsonObject json = new JsonObject();
-        String userID = (String) SharedData.getSharedData(mContext, SharedData.UserValue.USER_ID.name(), "");
-        JsonArray list = new JsonArray();
-        List<StockDetailModel.stockDetailModel> items = mAdapter.getData();
-
-
-        for (StockDetailModel.stockDetailModel item : items) {
-            JsonObject obj = new JsonObject();
-
-            obj.addProperty("itm_code", item.getItm_code());
-            obj.addProperty("serial_no", item.getLot_no());
-            obj.addProperty("wh_code", item.getWh_code());
-            obj.addProperty("serial_qty", item.getInv_qty());
-            list.add(obj);
-
-        }
-
-        json.addProperty("p_corp_code", mOrder.getCorp_code());
-        json.addProperty("p_stk_date", mOrder.getStk_date());
-        json.addProperty("p_stk_no1", mOrder.getStk_no1());
-        json.addProperty("p_user_id", userID);
-        json.add("detail", list);
-
-        Utils.Log("new Gson().toJson(json) ==> : " + new Gson().toJson(json));
-
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"), new Gson().toJson(json));
-
-        Call<StockDetailModel> call = service.stockSave(body);
-
-        call.enqueue(new Callback<StockDetailModel>() {
-            @Override
-            public void onResponse(Call<StockDetailModel> call, Response<StockDetailModel> response) {
-                if (response.isSuccessful()) {
-                    StockDetailModel model = response.body();
-                    //Utils.Log("model ==> : "+new Gson().toJson(model));
-                    if (model != null) {
-                        if (model.getFlag() == StockDetailModel.SUCCESS) {
-                            mOneBtnPopup = new OneBtnPopup(getActivity(), "처리되었습니다.", R.drawable.popup_title_alert, new Handler() {
-                                @Override
-                                public void handleMessage(Message msg) {
-                                    if (msg.what == 1) {
-                                        getActivity().finish();
-                                        mOneBtnPopup.hideDialog();
-                                    }
-                                }
-                            });
-                        } else {
-                            mOneBtnPopup = new OneBtnPopup(getActivity(), model.getMSG(), R.drawable.popup_title_alert, new Handler() {
-                                @Override
-                                public void handleMessage(Message msg) {
-                                    if (msg.what == 1) {
-                                        mOneBtnPopup.hideDialog();
-                                    }
-                                }
-                            });
-                        }
-                    }
-                } else {
-                    Utils.LogLine(response.message());
-                    mTwoBtnPopup = new TwoBtnPopup(getActivity(), "전송을 실패하였습니다.\n 재전송 하시겠습니까?", R.drawable.popup_title_alert, new Handler() {
-                        @Override
-                        public void handleMessage(Message msg) {
-                            if (msg.what == 1) {
-                                stk_scan_save();
-                                mTwoBtnPopup.hideDialog();
-                            }
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(Call<StockDetailModel> call, Throwable t) {
-                Utils.LogLine(t.getMessage());
-                mTwoBtnPopup = new TwoBtnPopup(getActivity(), "전송을 실패하였습니다.\n 재전송 하시겠습니까?", R.drawable.popup_title_alert, new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
-                        if (msg.what == 1) {
-                            stk_scan_save();
-                            mTwoBtnPopup.hideDialog();
-                        }
-                    }
-                });
-            }
-        });
-
-    }
-
 
     class ListAdapter extends BaseAdapter {
         LayoutInflater mInflater;
@@ -389,12 +297,30 @@ public class StockFragmentDetail extends CommonFragment {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             if (v == null) {
                 holder = new ViewHolder();
-                v = inflater.inflate(R.layout.cell_stock_detail, null);
+                v = inflater.inflate(R.layout.cell_stock_store_detail, null);
 
                 holder.itm_name = v.findViewById(R.id.tv_itm_name);
                 holder.lot_no = v.findViewById(R.id.tv_lot_no);
                 //holder.wh_code = v.findViewById(R.id.tv_wh_code);
                 holder.inv_qty = v.findViewById(R.id.tv_inv_qty);
+                holder.bt_delete = v.findViewById(R.id.bt_delete);
+
+                holder.bt_delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mBarcode.remove(mStockDetailList.get(position).getLot_no());
+                        mStockDetailList.remove(position);
+                        mAdapter.notifyDataSetChanged();
+
+                        if (beg_barcode.equals(barcode)){
+                            beg_barcode = "";
+                        }
+
+
+
+                    }
+                });
+
 
                 v.setTag(holder);
 
@@ -428,7 +354,7 @@ public class StockFragmentDetail extends CommonFragment {
         public class ViewHolder {
             TextView itm_name;
             TextView lot_no;
-            TextView wh_code;
+            ImageButton bt_delete;
             TextView inv_qty;
 
 
@@ -436,6 +362,104 @@ public class StockFragmentDetail extends CommonFragment {
 
 
     }//Close Adapter
+
+
+    /**
+     * 재고실사저장
+     */
+    private void stk_scan_save() {
+
+        ApiClientService service = ApiClientService.retrofit.create(ApiClientService.class);
+        JsonObject json = new JsonObject();
+        String userID = (String) SharedData.getSharedData(mContext, SharedData.UserValue.USER_ID.name(), "");
+        JsonArray list = new JsonArray();
+        List<StockDetailModel.stockDetailModel> items = mAdapter.getData();
+
+
+        for (StockDetailModel.stockDetailModel item : items) {
+            JsonObject obj = new JsonObject();
+
+            obj.addProperty("itm_code", item.getItm_code());
+            obj.addProperty("serial_no", item.getLot_no());
+            obj.addProperty("wh_code", item.getWh_code());
+            obj.addProperty("serial_qty", item.getInv_qty());
+            list.add(obj);
+        }
+
+        json.addProperty("p_corp_code", mOrder.getCorp_code());
+        json.addProperty("p_stk_date", mOrder.getStk_date());
+        json.addProperty("p_stk_no1", mOrder.getStk_no1());
+        json.addProperty("p_user_id", userID);
+        json.add("detail", list);
+
+        Utils.Log("new Gson().toJson(json) ==> : " + new Gson().toJson(json));
+
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), new Gson().toJson(json));
+
+        Call<StockDetailModel> call = service.stockSave(body);
+
+        call.enqueue(new Callback<StockDetailModel>() {
+            @Override
+            public void onResponse(Call<StockDetailModel> call, Response<StockDetailModel> response) {
+
+                if (response.isSuccessful()) {
+                    StockDetailModel model = response.body();
+                    //Utils.Log("model ==> : "+new Gson().toJson(model));
+                    if (model != null) {
+                        if (model.getFlag() == StockDetailModel.SUCCESS) {
+
+                            mOneBtnPopup = new OneBtnPopup(getActivity(), "처리되었습니다.", R.drawable.popup_title_alert, new Handler() {
+                                @Override
+                                public void handleMessage(Message msg) {
+                                    if (msg.what == 1) {
+                                        getActivity().finish();
+                                        mOneBtnPopup.hideDialog();
+                                    }
+                                }
+                            });
+                        } else {
+                            mOneBtnPopup = new OneBtnPopup(getActivity(), model.getMSG(), R.drawable.popup_title_alert, new Handler() {
+                                @Override
+                                public void handleMessage(Message msg) {
+                                    if (msg.what == 1) {
+                                        mOneBtnPopup.hideDialog();
+                                        bt_next.setEnabled(true);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    Utils.LogLine(response.message());
+                    mTwoBtnPopup = new TwoBtnPopup(getActivity(), "전송을 실패하였습니다.\n 재전송 하시겠습니까?", R.drawable.popup_title_alert, new Handler() {
+                        @Override
+                        public void handleMessage(Message msg) {
+                            if (msg.what == 1) {
+                                stk_scan_save();
+                                mTwoBtnPopup.hideDialog();
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<StockDetailModel> call, Throwable t) {
+                Utils.LogLine(t.getMessage());
+                mTwoBtnPopup = new TwoBtnPopup(getActivity(), "전송을 실패하였습니다.\n 재전송 하시겠습니까?", R.drawable.popup_title_alert, new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        if (msg.what == 1) {
+                            stk_scan_save();
+                            mTwoBtnPopup.hideDialog();
+                        }
+                    }
+                });
+            }
+        });
+
+    }
+
 
     @Override
     public void onDestroy() {
@@ -448,4 +472,4 @@ public class StockFragmentDetail extends CommonFragment {
     }
 
 
-}//Close Activity
+}//Close Acitivity

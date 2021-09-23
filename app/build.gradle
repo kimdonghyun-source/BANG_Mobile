@@ -32,8 +32,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             //buildConfig 설정
-            //buildConfigField "String", "API_SERVER", "\"http://211.56.248.20:14283/BANG_TEST/Mobile/\""       //테스트용
-            buildConfigField "String", "API_SERVER", "\"http://61.109.247.216:14283/BANG/Mobile/\""       //운영서버
+            //buildConfigField "String", "API_SERVER", "\"http://211.56.248.25:14283/BANG_TEST/Mobile/\""       //테스트용
+            buildConfigField "String", "API_SERVER", "\"http://61.109.247.216:14283/BANG/Mobile/\""             //운영서버
         }
 
         release {
@@ -41,8 +41,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             //buildConfig 설정
-            //buildConfigField "String", "API_SERVER", "\"http://211.56.248.20:14283/BANG_TEST/Mobile/\""       //테스트용
-            buildConfigField "String", "API_SERVER", "\"http://61.109.247.216:14283/BANG/Mobile/\""       //운영서버
+            //buildConfigField "String", "API_SERVER", "\"http://211.56.248.25:14283/BANG_TEST/Mobile/\""       //테스트용
+            buildConfigField "String", "API_SERVER", "\"http://61.109.247.216:14283/BANG/Mobile/\""             //운영서버
 
             signingConfig signingConfigs.release
         }

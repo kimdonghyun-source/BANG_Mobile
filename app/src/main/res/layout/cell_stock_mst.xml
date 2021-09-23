@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 주문자재출고 조회 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:paddingTop="5dp"
     android:paddingBottom="5dp"
+    android:paddingLeft="2dp"
     android:orientation="horizontal">
 
         <TextView
-            android:paddingLeft="2dp"
+
             android:id="@+id/stk_date"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.25"
-            android:gravity="left|center"
+            android:gravity="center"
             android:fontFamily="@font/tmoney"
             android:textSize="13dp"
             android:text="조사일자"
@@ -27,7 +27,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.1"
-            android:layout_gravity="center|left"
+            android:layout_gravity="center"
             android:textSize="13dp"
             android:text="순번"
             android:textColor="#000000"/>
@@ -40,7 +40,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.3"
-            android:layout_gravity="center|left"
+            android:layout_gravity="center"
             android:textSize="13dp"
             android:text="창고"
             android:textColor="#000000"/>
@@ -53,9 +53,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.4"
-            android:layout_gravity="center|left"
+            android:layout_gravity="center"
             android:textSize="13dp"
-            android:text="비고"
+            android:text="비고1"
             android:textColor="#000000"/>
 
 

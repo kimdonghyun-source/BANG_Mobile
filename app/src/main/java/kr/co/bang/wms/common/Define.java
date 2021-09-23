@@ -36,6 +36,11 @@ public class Define {
     //시리얼위치조회
     public static final int MENU_SERIAL_LOCATION = 8;
 
+    //재고조사(대리점)
+    public static final int MENU_STOCK_STORE = 9;
+    //재고조사
+    public static final int MENU_STOCK_STORE_DATAIL = 91;
+
    //--------------------------------------------------------------------------------
     //주문자재출고(뱅)
     public static final String TAG_PRODUCTION_IN = "production";
@@ -63,6 +68,10 @@ public class Define {
     public static final String TAG_STOCK_DETAIL = "stock_detail";
     //시리얼위치조회
     public static final String TAG_SERIAL_LOCATION = "serial_location";
+    //재고조사(대리점)
+    public static final String TAG_STOCK_STORE = "stock_store";
+    //재고조사디테일(대리점)
+    public static final String TAG_STOCK_STORE_DATAIL = "stock_store_datail";
 
 
     //--------------------------------------------------------------------------------

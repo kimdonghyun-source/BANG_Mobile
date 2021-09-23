@@ -33,6 +33,7 @@ public class MainActivity extends CommonCompatActivity {
         findViewById(R.id.bt_menu_2).setOnClickListener(onClickListener); //박스라벨패킹
         findViewById(R.id.bt_menu_10).setOnClickListener(onClickListener); //재고조사
         findViewById(R.id.bt_menu_13).setOnClickListener(onClickListener); //시리얼위치조회
+        findViewById(R.id.bt_menu_14).setOnClickListener(onClickListener); //재고조사(대리점)
         findViewById(R.id.bt_logout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,6 +93,11 @@ public class MainActivity extends CommonCompatActivity {
                 //시리얼위치조회
                 case R.id.bt_menu_13:
                     intent.putExtra("menu", Define.MENU_SERIAL_LOCATION);
+                    break;
+
+                //재고조사(대리점)
+                case R.id.bt_menu_14:
+                    intent.putExtra("menu", Define.MENU_STOCK_STORE);
                     break;
             }
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
