@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -167,7 +168,9 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
         intent.putExtra("args", extras);
 
         startActivityForResult(intent, 100);
+
     }
+
 
     @Override
     public void onResume() {
@@ -177,7 +180,7 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
             @Override
             public void handleMessage(Message msg) {
                 if (msg.what == 1) {
-                    BarcodeReadEvent event = (BarcodeReadEvent) msg.obj;
+                    final BarcodeReadEvent event = (BarcodeReadEvent) msg.obj;
                     String barcode = event.getBarcodeData();
                     barcode_scan = barcode;
 
@@ -216,6 +219,7 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
                         }
                     }
 
+                    AidcReader.getInstance().release(); //스캐너 죽이기
                     if (barcode_scan.length() == 17) {
                         beg_barcode = barcode;
                         MatSerialCount();
@@ -397,13 +401,17 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
                                 requestScan();
                             }
 
+                            AidcReader.getInstance().claim(mContext);    //스캐너 다시 활성화
+
                         } else {
                             Utils.Toast(mContext, model.getMSG());
+                            AidcReader.getInstance().claim(mContext);    //스캐너 다시 활성화
                         }
                     }
                 } else {
                     Utils.LogLine(response.message());
                     Utils.Toast(mContext, response.code() + " : " + response.message());
+                    AidcReader.getInstance().claim(mContext);    //스캐너 다시 활성화
                 }
             }
 
@@ -483,14 +491,16 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
                                 //MatSerialCount();
                                 requestScanItem();
                             }
-
+                            AidcReader.getInstance().claim(mContext);    //스캐너 다시 활성화
                         } else {
                             Utils.Toast(mContext, model.getMSG());
+                            AidcReader.getInstance().claim(mContext);    //스캐너 다시 활성화
                         }
                     }
                 } else {
                     Utils.LogLine(response.message());
                     Utils.Toast(mContext, response.code() + " : " + response.message());
+                    AidcReader.getInstance().claim(mContext);    //스캐너 다시 활성화
                 }
             }
 
@@ -1161,7 +1171,7 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
                 } else {
                     Utils.LogLine(response.message());
                     /*mTwoBtnPopup = new TwoBtnPopup(getActivity(), "이동 전송을 실패하였습니다.\n 재전송 하시겠습니까?", R.drawable.popup_title_alert, new Handler() {
-                        @Override
+                        @Overridemodel get
                         public void handleMessage(Message msg) {
                             if (msg.what == 1) {
                                 requestScan();

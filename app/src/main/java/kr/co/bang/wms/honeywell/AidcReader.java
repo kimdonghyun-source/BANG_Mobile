@@ -39,6 +39,7 @@ public class AidcReader {
             Log.d("JeLib","Code ID: " + event.getCodeId());
             Log.d("JeLib","AIM ID: " + event.getAimId());
             Log.d("JeLib","Timestamp: " + event.getTimestamp());
+
             String barcode = event.getBarcodeData();
             if(mHandler!=null && Utils.nullString(barcode,"").length() > 0){
                 Message msg = mHandler.obtainMessage();
