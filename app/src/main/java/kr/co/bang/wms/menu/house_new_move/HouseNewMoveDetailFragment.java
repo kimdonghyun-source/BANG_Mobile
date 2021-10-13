@@ -219,7 +219,7 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
                         }
                     }
 
-                    AidcReader.getInstance().release(); //스캐너 죽이기
+
                     if (barcode_scan.length() == 17) {
                         beg_barcode = barcode;
                         MatSerialCount();
@@ -538,8 +538,10 @@ public class HouseNewMoveDetailFragment extends CommonFragment {
                                     if (item.getR_CNT() == 0) {
                                         //MatSerialScanItem();
                                         if (barcode_scan.length() == 17) {
+                                            AidcReader.getInstance().release(); //스캐너 죽이기
                                             MatSerialScan();
                                         } else {
+                                            AidcReader.getInstance().release(); //스캐너 죽이기
                                             MatSerialScanItem();
                                         }
                                     }
