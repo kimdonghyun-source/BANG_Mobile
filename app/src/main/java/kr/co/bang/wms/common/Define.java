@@ -34,12 +34,21 @@ public class Define {
     public static final int MENU_STOCK_DETAIL = 71;
 
     //시리얼위치조회
-    public static final int MENU_SERIAL_LOCATION = 8;
+    public static final int MENU_SERIAL_LOCATION = 9;
 
-    //재고조사(대리점)
+    /*//재고조사(대리점)
     public static final int MENU_STOCK_STORE = 9;
     //재고조사
-    public static final int MENU_STOCK_STORE_DATAIL = 91;
+    public static final int MENU_STOCK_STORE_DATAIL = 91;*/
+
+    //대리점재고조사
+    public static final int MENU_STORE_SEARCH = 8;
+
+    //대리점재고조사 디테일
+    public static final int MENU_STORE_SEARCH_DETAIL = 81;
+
+    //대리점재고조사 잔액계산
+    public static final int MENU_STORE_SEARCH_CALC = 82;
 
    //--------------------------------------------------------------------------------
     //주문자재출고(뱅)
@@ -72,7 +81,12 @@ public class Define {
     public static final String TAG_STOCK_STORE = "stock_store";
     //재고조사디테일(대리점)
     public static final String TAG_STOCK_STORE_DATAIL = "stock_store_datail";
-
+    //대리점재고조사
+    public static final String TAG_STORE_SEARCH = "store_search";
+    //대리점재고조사 디테일
+    public static final String TAG_STORE_SEARCH_DETAIL = "store_search_detail";
+    //대리점재고조사 잔액계산
+    public static final String TAG_STORE_SEARCH_CALC = "store_search_calc";
 
     //--------------------------------------------------------------------------------
 

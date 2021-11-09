@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 주문자재출고 조회 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:orientation="horizontal">
+
+
+        <TextView
+            android:paddingLeft="2dp"
+            android:id="@+id/tv_cst_name"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.6"
+            android:gravity="left|center"
+            android:fontFamily="@font/tmoney"
+            android:textSize="15dp"
+            android:textColor="#000000"/>
+
+        <TextView
+            android:paddingLeft="2dp"
+            android:id="@+id/tv_cst_call"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:gravity="left|center"
+            android:fontFamily="@font/tmoney"
+            android:textSize="15dp"
+            android:textColor="#000000"/>
+
+
+
+</LinearLayout>

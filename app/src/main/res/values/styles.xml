@@ -29,6 +29,20 @@
     </style>
 
     <!-- 로케이션 edittext 스타일 -->
+    <style name="EditStoreDetail">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_gravity">center|left</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:inputType">textVisiblePassword</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">18dp</item>
+        <item name="android:imeOptions">actionDone</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <!-- 로케이션 edittext 스타일 -->
     <style name="EditTextLocation1">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>

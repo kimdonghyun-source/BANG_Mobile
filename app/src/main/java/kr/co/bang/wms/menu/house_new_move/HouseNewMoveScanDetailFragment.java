@@ -159,17 +159,12 @@ public class HouseNewMoveScanDetailFragment extends CommonFragment {
                     startActivityForResult(intent, 100);*/
                     getActivity().finish();
 
-
-
                     break;
 
             }
 
         }
     };
-
-
-
 
 
     class ListAdapter extends BaseAdapter {

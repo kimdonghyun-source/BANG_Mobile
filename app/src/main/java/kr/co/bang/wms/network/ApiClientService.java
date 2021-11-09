@@ -3,8 +3,9 @@ package kr.co.bang.wms.network;
 import java.util.concurrent.TimeUnit;
 
 import kr.co.bang.wms.BuildConfig;
-import kr.co.bang.wms.menu.stock.StockFragmentDetail;
 import kr.co.bang.wms.model.BoxlblListModel;
+import kr.co.bang.wms.model.CalcModel;
+import kr.co.bang.wms.model.CstInvModel;
 import kr.co.bang.wms.model.CustomerInfoModel;
 import kr.co.bang.wms.model.DeliveryOrderModel;
 import kr.co.bang.wms.model.EmpModel;
@@ -22,11 +23,11 @@ import kr.co.bang.wms.model.MatScanCntModel;
 import kr.co.bang.wms.model.MaterialLocAndLotModel;
 import kr.co.bang.wms.model.MaterialOutDetailModel;
 import kr.co.bang.wms.model.MaterialOutListModel;
-import kr.co.bang.wms.model.MorEmpModel;
 import kr.co.bang.wms.model.MorListModel;
 import kr.co.bang.wms.model.MorSerialScan;
 import kr.co.bang.wms.model.MoveAskModel;
 import kr.co.bang.wms.model.PalletSnanModel;
+import kr.co.bang.wms.model.PopupCstModel;
 import kr.co.bang.wms.model.ResultBoxModel;
 import kr.co.bang.wms.model.ResultModel;
 import kr.co.bang.wms.model.SerialLocationModel;
@@ -34,6 +35,7 @@ import kr.co.bang.wms.model.SerialNumberModel;
 import kr.co.bang.wms.model.StockDetailModel;
 import kr.co.bang.wms.model.StockModel;
 import kr.co.bang.wms.model.StockStoreModel;
+import kr.co.bang.wms.model.StoreCstListModel;
 import kr.co.bang.wms.model.UserInfoModel;
 import kr.co.bang.wms.model.WarehouseModel;
 import okhttp3.OkHttpClient;
@@ -113,6 +115,18 @@ public interface ApiClientService {
     );
 
     /**
+     * 거래처리스트
+     * @param proc 프로시저
+     * @param code 코드
+     * */
+    @POST("R2JsonProc.asp")
+    Call<PopupCstModel> popupCstList(
+            @Query("proc") String proc,
+            @Query("param1") String code
+
+    );
+
+    /**
      * 스캔내역삭제
      * @param proc 프로시저
      * @param mac 맥주소
@@ -123,6 +137,59 @@ public interface ApiClientService {
             @Query("proc") String proc,
             @Query("param1") String mac,
             @Query("param2") String mat_cd
+
+    );
+
+    /**
+     * 거래처조회
+     * @param proc 프로시저
+     * @param cst_code 거래처코드
+     * */
+    @POST("R2JsonProc.asp")
+    Call<CalcModel> CalcList(
+            @Query("proc") String proc,
+            @Query("param1") String cst_code
+    );
+
+    /**
+     * 거래처조회
+     * @param proc 프로시저
+     * @param cst_code 거래처코드
+     * @param cst_name 거래처명
+     * */
+    @POST("R2JsonProc.asp")
+    Call<StoreCstListModel> StoreCstList(
+            @Query("proc") String proc,
+            @Query("param1") String cst_code,
+            @Query("param2") String cst_name
+
+    );
+
+    /**
+     * 재고조회
+     * @param proc 프로시저
+     * @param cst_code 창고코드(거래처코드)
+     * @param lot_no 로트번호
+     * */
+    @POST("R2JsonProc.asp")
+    Call<CstInvModel> StoreCstInvList(
+            @Query("proc") String proc,
+            @Query("param1") String cst_code,
+            @Query("param2") String lot_no
+
+    );
+
+    /**
+     * 재고없으면 불일치 추가
+     * @param proc 프로시저
+     * @param barcode 바코드번호
+     * @param gbn 구분값
+     * */
+    @POST("R2JsonProc.asp")
+    Call<CstInvModel> ScanAdd(
+            @Query("proc") String proc,
+            @Query("param1") String barcode,
+            @Query("param2") String gbn
 
     );
 
@@ -360,6 +427,15 @@ public interface ApiClientService {
     );
 
     /**
+     * 대리점재고조사 ERP전송
+     * */
+    @Headers({"Content-Type: application/json;charset=UTF-8"})
+    @POST("R2JsonProc_cst_stk_save.asp")
+    Call<CstInvModel> CstInvSave(
+            @Body RequestBody body
+    );
+
+    /**
      *이동처리요청
      * */
     @Headers({"Content-Type: application/json;charset=UTF-8"})
@@ -401,6 +477,15 @@ public interface ApiClientService {
     @Headers({"Content-Type: application/json;charset=UTF-8"})
     @POST("R2JsonProc_mat_out_save.asp")
     Call<ResultModel> postMatOutSave(
+            @Body RequestBody body
+    );
+
+    /**
+     * 잔액계산
+     * */
+    @Headers({"Content-Type: application/json;charset=UTF-8"})
+    @POST("R2JsonProc_make_temp.asp")
+    Call<ResultModel> postTempSave(
             @Body RequestBody body
     );
 

@@ -97,8 +97,8 @@
             android:background="@android:color/transparent"
             android:src="@drawable/main_menu10" />
 
+
         <ImageButton
-            android:visibility="gone"
             android:id="@+id/bt_menu_14"
             android:layout_width="wrap_content"
             android:layout_height="0dp"

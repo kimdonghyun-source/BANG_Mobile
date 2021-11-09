@@ -97,7 +97,7 @@ public class MainActivity extends CommonCompatActivity {
 
                 //재고조사(대리점)
                 case R.id.bt_menu_14:
-                    intent.putExtra("menu", Define.MENU_STOCK_STORE);
+                    intent.putExtra("menu", Define.MENU_STORE_SEARCH);
                     break;
             }
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);

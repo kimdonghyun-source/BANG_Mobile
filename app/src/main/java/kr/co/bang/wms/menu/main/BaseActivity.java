@@ -40,8 +40,9 @@ import kr.co.bang.wms.menu.popup.TwoBtnPopup;
 import kr.co.bang.wms.menu.serial_location.SerialLocationFragment;
 import kr.co.bang.wms.menu.stock.StockFragment;
 import kr.co.bang.wms.menu.stock.StockFragmentDetail;
-import kr.co.bang.wms.menu.stock_store.StockStoreDetailFragment;
-import kr.co.bang.wms.menu.stock_store.StockStoreFragment;
+import kr.co.bang.wms.menu.store.StoreSearchCALCFragment;
+import kr.co.bang.wms.menu.store.StoreSearchDetailFragment;
+import kr.co.bang.wms.menu.store.StoreSearchFragment;
 import kr.co.bang.wms.model.UserInfoModel;
 
 public class BaseActivity extends CommonCompatActivity {
@@ -90,9 +91,8 @@ public class BaseActivity extends CommonCompatActivity {
         list.add("박스라벨패킹");
         list.add("재고 실사");
         list.add("재고 조사");
+        list.add("대리점재고조사");
         list.add("시리얼위치조회");
-        list.add("추가할거추가");
-
 
         ListView listView = findViewById(R.id.list);
         mAdapter = new ListAdapter();
@@ -214,7 +214,7 @@ public class BaseActivity extends CommonCompatActivity {
                 break;
             }
 
-            //재고조사(대리점)
+            /*//재고조사(대리점)
             case Define.MENU_STOCK_STORE: {
                 CommonFragment fragment = new StockStoreFragment();
                 fragment.setArguments(args);
@@ -227,6 +227,30 @@ public class BaseActivity extends CommonCompatActivity {
                 CommonFragment fragment = new StockStoreDetailFragment();
                 fragment.setArguments(args);
                 replaceContent(fragment, Define.TAG_STOCK_STORE_DATAIL, R.id.fl_content);
+                break;
+            }*/
+
+            //대리점재고조사
+            case Define.MENU_STORE_SEARCH: {
+                CommonFragment fragment = new StoreSearchFragment();
+                fragment.setArguments(args);
+                replaceContent(fragment, Define.TAG_STORE_SEARCH, R.id.fl_content);
+                break;
+            }
+
+            //대리점재고조사 디테일
+            case Define.MENU_STORE_SEARCH_DETAIL: {
+                CommonFragment fragment = new StoreSearchDetailFragment();
+                fragment.setArguments(args);
+                replaceContent(fragment, Define.TAG_STORE_SEARCH_DETAIL, R.id.fl_content);
+                break;
+            }
+
+            //대리점재고조사 잔액계산
+            case Define.MENU_STORE_SEARCH_CALC: {
+                CommonFragment fragment = new StoreSearchCALCFragment();
+                fragment.setArguments(args);
+                replaceContent(fragment, Define.TAG_STORE_SEARCH_CALC, R.id.fl_content);
                 break;
             }
 
@@ -319,7 +343,7 @@ public class BaseActivity extends CommonCompatActivity {
                 break;
             }
 
-            //재고조사(대리점)
+            /*//재고조사(대리점)
             case Define.MENU_STOCK_STORE: {
                 image = R.drawable.menu_product_stock_store_title;
                 break;
@@ -328,6 +352,24 @@ public class BaseActivity extends CommonCompatActivity {
             //재고조사디테일(대리점)
             case Define.MENU_STOCK_STORE_DATAIL: {
                 image = R.drawable.menu_product_stock_store_title;
+                break;
+            }*/
+
+            //대리점재고조사
+            case Define.MENU_STORE_SEARCH: {
+                image = R.drawable.bang_title14;
+                break;
+            }
+
+            //대리점재고조사 디테일
+            case Define.MENU_STORE_SEARCH_DETAIL: {
+                image = R.drawable.bang_title14;
+                break;
+            }
+
+            //대리점재고조사 잔액계산
+            case Define.MENU_STORE_SEARCH_CALC: {
+                image = R.drawable.bang_title14;
                 break;
             }
 
@@ -535,10 +577,31 @@ public class BaseActivity extends CommonCompatActivity {
                                         break;
                                     }
 
-                                    //재고조사대리점
+                                    /*//재고조사대리점
                                     case Define.MENU_STOCK_STORE: {
                                         CommonFragment fragment = new StockStoreFragment();
                                         replaceContent(fragment, Define.TAG_STOCK_STORE, R.id.fl_content);
+                                        break;
+                                    }*/
+
+                                    //대리점재고조사
+                                    case Define.MENU_STORE_SEARCH: {
+                                        CommonFragment fragment = new StoreSearchFragment();
+                                        replaceContent(fragment, Define.TAG_STORE_SEARCH, R.id.fl_content);
+                                        break;
+                                    }
+
+                                    //대리점재고조사 디테일
+                                    case Define.MENU_STORE_SEARCH_DETAIL: {
+                                        CommonFragment fragment = new StoreSearchDetailFragment();
+                                        replaceContent(fragment, Define.TAG_STORE_SEARCH_DETAIL, R.id.fl_content);
+                                        break;
+                                    }
+
+                                    //대리점재고조사 잔액계산
+                                    case Define.MENU_STORE_SEARCH_CALC: {
+                                        CommonFragment fragment = new StoreSearchCALCFragment();
+                                        replaceContent(fragment, Define.TAG_STORE_SEARCH_CALC, R.id.fl_content);
                                         break;
                                     }
 

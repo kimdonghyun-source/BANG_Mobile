@@ -137,7 +137,7 @@ public class StockFragment extends CommonFragment {
             startActivityForResult(intent, 100);
         }else{
             Intent intent = new Intent(getActivity(), BaseActivity.class);
-            intent.putExtra("menu", Define.MENU_STOCK_STORE_DATAIL);
+            //intent.putExtra("menu", Define.MENU_STOCK_STORE_DATAIL);
             Bundle extras = new Bundle();
             extras.putSerializable("model", mStockStoremodel);
             extras.putSerializable("position", position);

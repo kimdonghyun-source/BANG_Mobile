@@ -13,7 +13,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        //Cannot fit requested classes in a single dex file ÇØ°áÀ» À§ÇØ
+        //Cannot fit requested classes in a single dex file í•´ê²°ì„ ìœ„í•´
         multiDexEnabled true
     }
 
@@ -31,25 +31,25 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            //buildConfig ¼³Á¤
-            //buildConfigField "String", "API_SERVER", "\"http://211.56.248.25:14283/BANG_TEST/Mobile/\""       //Å×½ºÆ®¿ë
-            buildConfigField "String", "API_SERVER", "\"http://61.109.247.216:14283/BANG/Mobile/\""             //¿î¿µ¼­¹ö
+            //buildConfig ì„¤ì •
+            //buildConfigField "String", "API_SERVER", "\"http://211.56.248.25:14283/BANG_TEST/Mobile/\""       //í…ŒìŠ¤íŠ¸ìš©
+            buildConfigField "String", "API_SERVER", "\"http://61.109.247.216:14283/BANG/Mobile/\""             //ìš´ì˜ì„œë²„
         }
 
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            //buildConfig ¼³Á¤
-            //buildConfigField "String", "API_SERVER", "\"http://211.56.248.25:14283/BANG_TEST/Mobile/\""       //Å×½ºÆ®¿ë
-            buildConfigField "String", "API_SERVER", "\"http://61.109.247.216:14283/BANG/Mobile/\""             //¿î¿µ¼­¹ö
+            //buildConfig ì„¤ì •
+            //buildConfigField "String", "API_SERVER", "\"http://211.56.248.25:14283/BANG_TEST/Mobile/\""       //í…ŒìŠ¤íŠ¸ìš©
+            buildConfigField "String", "API_SERVER", "\"http://61.109.247.216:14283/BANG/Mobile/\""             //ìš´ì˜ì„œë²„
 
             signingConfig signingConfigs.release
         }
     }
 }
 
-//MergeAdapter »ç¿ë ¶óÀÌºê·¯¸®
+//MergeAdapter ì‚¬ìš© ë¼ì´ë¸ŒëŸ¬ë¦¬
 repositories {
     maven {
         url "https://s3.amazonaws.com/repo.commonsware.com"
@@ -65,27 +65,27 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    //recyclerview »ç¿ëÀ» À§ÇÑ ¶óÀÌºê·¯¸®
+    //recyclerview ì‚¬ìš©ì„ ìœ„í•œ ë¼ì´ë¸ŒëŸ¬ë¦¬
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
-    //MergeAdapter »ç¿ë ¶óÀÌºê·¯¸®
+    //MergeAdapter ì‚¬ìš© ë¼ì´ë¸ŒëŸ¬ë¦¬
     implementation 'com.commonsware.cwac:sacklist:1.0.3'
 
-    //ÀÌ¹ÌÁö°ü·Ã ¶óÀÌºê·¯¸®
+    //ì´ë¯¸ì§€ê´€ë ¨ ë¼ì´ë¸ŒëŸ¬ë¦¬
     implementation 'com.github.bumptech.glide:glide:4.9.0'
 
-    //³×Æ®¿öÅ© Åë½Å ¹× jsonÆÄ½Ì ¶óÀÌºê·¯¸®
+    //ë„¤íŠ¸ì›Œí¬ í†µì‹  ë° jsoníŒŒì‹± ë¼ì´ë¸ŒëŸ¬ë¦¬
     implementation 'com.squareup.retrofit2:retrofit:2.6.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.retrofit2:converter-scalars:2.6.1'
     implementation 'com.google.code.gson:gson:2.8.5'
 
-    //retrofit2 ·Î±× È®ÀÎÀ» À§ÇÑ ¶óÀÌºê·¯¸®
+    //retrofit2 ë¡œê·¸ í™•ì¸ì„ ìœ„í•œ ë¼ì´ë¸ŒëŸ¬ë¦¬
     implementation 'com.squareup.okhttp3:okhttp:3.12.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
     implementation project(path: ':DataCollection')
     implementation project(path: ':jelib')
 
-    //activity¿¡¼­ fragment¿¡ ÀÌº¥Æ®¸¦ ¾Ë·ÁÁÖ±â À§ÇÑ ¶óÀÌºê·¯¸®
+    //activityì—ì„œ fragmentì— ì´ë²¤íŠ¸ë¥¼ ì•Œë ¤ì£¼ê¸° ìœ„í•œ ë¼ì´ë¸ŒëŸ¬ë¦¬
     implementation 'com.squareup:otto:1.3.8'
 }
