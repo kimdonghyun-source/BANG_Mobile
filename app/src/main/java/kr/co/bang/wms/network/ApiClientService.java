@@ -6,6 +6,7 @@ import kr.co.bang.wms.BuildConfig;
 import kr.co.bang.wms.model.BoxlblListModel;
 import kr.co.bang.wms.model.CalcModel;
 import kr.co.bang.wms.model.CstInvModel;
+import kr.co.bang.wms.model.CstInvPopupModel;
 import kr.co.bang.wms.model.CustomerInfoModel;
 import kr.co.bang.wms.model.DeliveryOrderModel;
 import kr.co.bang.wms.model.EmpModel;
@@ -190,6 +191,32 @@ public interface ApiClientService {
             @Query("proc") String proc,
             @Query("param1") String barcode,
             @Query("param2") String gbn
+
+    );
+
+    /**
+     * 재고없으면 팝업 서치
+     * @param proc 프로시저
+     * @param barcode 바코드번호
+     * @param gbn 구분값
+     * */
+    @POST("R2JsonProc.asp")
+    Call<CstInvPopupModel> ScanSearchPop(
+            @Query("proc") String proc,
+            @Query("param1") String barcode,
+            @Query("param2") String gbn
+
+    );
+
+    /**
+     * LOT 검사
+     * @param proc 프로시저
+     * @param barcode 바코드번호
+     * */
+    @POST("R2JsonProc.asp")
+    Call<CstInvModel> LotSearch(
+            @Query("proc") String proc,
+            @Query("param1") String barcode
 
     );
 

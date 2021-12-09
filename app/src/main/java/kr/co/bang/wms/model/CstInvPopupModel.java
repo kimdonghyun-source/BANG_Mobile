@@ -2,9 +2,9 @@ package kr.co.bang.wms.model;
 
 import java.util.List;
 
-public class CstInvModel extends ResultModel {
+public class CstInvPopupModel extends ResultModel {
 
-    List<CstInvModel.Item> items;
+    List<CstInvPopupModel.Item> items;
 
     public List<Item> getItems() {
         return items;
@@ -137,3 +137,4 @@ public class CstInvModel extends ResultModel {
         }
     }
 }
+

@@ -72,7 +72,7 @@ public class LoginActivity extends CommonCompatActivity {
 
 
         TextView tv_version = findViewById(R.id.tv_version);
-        tv_version.setText(Utils.appVersionName(mContext));
+        tv_version.setText("ver "+Utils.appVersionName(mContext));
 
         et_user_id = findViewById(R.id.et_user_id);
         et_pass = findViewById(R.id.et_pass);

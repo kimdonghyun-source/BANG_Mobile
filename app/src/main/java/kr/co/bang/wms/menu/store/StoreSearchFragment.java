@@ -82,6 +82,7 @@ public class StoreSearchFragment extends CommonFragment{
 
         bt_cst.setOnClickListener(onClickListener);
         bt_store.setOnClickListener(onClickListener);
+        et_cst.setOnClickListener(onClickListener);
 
         mAdapter.setRetHandler(new Handler() {
             @Override
@@ -125,6 +126,9 @@ public class StoreSearchFragment extends CommonFragment{
                     StoreSearchList();
                     break;
 
+                case R.id.et_cst:
+                    requestCstList();
+                    break;
             }
 
         }

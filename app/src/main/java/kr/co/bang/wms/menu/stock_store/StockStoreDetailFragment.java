@@ -315,9 +315,6 @@ public class StockStoreDetailFragment extends CommonFragment {
                         if (beg_barcode.equals(barcode)){
                             beg_barcode = "";
                         }
-
-
-
                     }
                 });
 
