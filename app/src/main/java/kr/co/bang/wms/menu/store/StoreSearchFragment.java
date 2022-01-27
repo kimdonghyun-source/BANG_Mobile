@@ -137,7 +137,7 @@ public class StoreSearchFragment extends CommonFragment{
 
 
     /**
-     * 거래처분류 리스트
+     *  거래처리스트
      */
     private void requestCstList() {
         ApiClientService service = ApiClientService.retrofit.create(ApiClientService.class);

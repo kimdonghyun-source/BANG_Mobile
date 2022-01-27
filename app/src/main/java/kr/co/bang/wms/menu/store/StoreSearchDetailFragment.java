@@ -150,30 +150,29 @@ public class StoreSearchDetailFragment extends CommonFragment {
 
                     BarcodeReadEvent event = (BarcodeReadEvent) msg.obj;
                     String barcode = event.getBarcodeData();
-                    barcodeScan = barcode;
+                    barcodeScan = barcode.replace(" ", "");
 
                     if (mBarcode != null) {
-                        if (mBarcode.contains(barcode)) {
+                        if (mBarcode.contains(barcodeScan)) {
                             Utils.Toast(mContext, "동일한 바코드를 스캔하였습니다.");
                             return;
                         }
                     }
 
-                    if (beg_barocde != null){
-                        if (beg_barocde.equals(barcodeScan)){
+                    if (beg_barocde != null) {
+                        if (beg_barocde.equals(barcodeScan)) {
                             Utils.Toast(mContext, "동일한 바코드를 스캔하였습니다.");
                             return;
                         }
                     }
 
 
-
-                    et_from.setText(barcode);
+                    et_from.setText(barcodeScan);
                     beg_barocde = barcodeScan;
                     chk = "체크노노";
 
                     for (int k = 0; k < mAdapter.getItemCount(); k++) {
-                        if (mAdapter.itemsList.get(k).getLot_no1().equals(barcodeScan)) {
+                        if (mAdapter.itemsList.get(k).getLot_no1().equals(barcodeScan) || mAdapter.itemsList.get(k).getLot_no().equals(barcodeScan)) {
                             mcstInvModel.getItems().get(k).setSts("일치");
                             mAdapter.notifyDataSetChanged();
                             chk = "체크";
@@ -192,6 +191,7 @@ public class StoreSearchDetailFragment extends CommonFragment {
                                 beg_barocde = barcodeScan;
                             }
 
+
                         }
                     }
 
@@ -200,6 +200,7 @@ public class StoreSearchDetailFragment extends CommonFragment {
                             @Override
                             public void handleMessage(Message msg) {
                                 if (msg.what == 1) {
+                                    beg_barocde = "";
                                     StoreScanAllSearch();
                                 }
                             }
@@ -276,7 +277,9 @@ public class StoreSearchDetailFragment extends CommonFragment {
 
                 case R.id.bt_search:
                     chk = "체크노노";
-                    barcodeScan = et_from.getText().toString();
+
+                    barcodeScan = et_from.getText().toString().replace(" ", "");
+                    Log.d("바코드값", barcodeScan);
 
                     if (mBarcode != null) {
                         if (mBarcode.contains(barcodeScan)) {
@@ -449,7 +452,7 @@ public class StoreSearchDetailFragment extends CommonFragment {
                         if (mcstInvModel.getFlag() == ResultModel.SUCCESS) {
                             if (model.getFlag() != 0) {
                                 Utils.Toast(mContext, "조회된 데이터가 없습니다.");
-                                beg_barocde = " ";
+                                beg_barocde = "";
                                 return;
                             }
                             if (model.getItems().size() > 0) {
@@ -480,6 +483,7 @@ public class StoreSearchDetailFragment extends CommonFragment {
                             mAdapter.notifyDataSetChanged();
                             search_detail_listView.setAdapter(mAdapter);
                             mBarcode.add(barcodeScan);
+                            beg_barocde = barcodeScan;
 
                             mOneBtnPopup = new OneBtnPopup(getActivity(), "등록되었습니다.", R.drawable.popup_title_alert, new Handler() {
                                 @Override
@@ -531,7 +535,7 @@ public class StoreSearchDetailFragment extends CommonFragment {
                         if (mcstPopModel.getFlag() == ResultModel.SUCCESS) {
                             mNoBtnPopup.hideDialog();
                             if (model.getFlag() != 0) {
-                                beg_barocde = " ";
+                                beg_barocde = "";
                                 Utils.Toast(mContext, "조회된 데이터가 없습니다.");
                                 return;
                             }
@@ -553,13 +557,13 @@ public class StoreSearchDetailFragment extends CommonFragment {
                                                     mRegisterBtnPopup.hideDialog();
                                                     //obj = 0 판매용, obj = 1 시타용
                                                     StoreScanAdd(String.valueOf(msg.obj));
-                                                }else{
-                                                    beg_barocde = " ";
+                                                } else {
+                                                    beg_barocde = "";
                                                 }
                                             }
                                         });
-                                    }else{
-                                        beg_barocde = " ";
+                                    } else {
+                                        beg_barocde = "";
                                     }
                                 }
                             });
@@ -631,7 +635,7 @@ public class StoreSearchDetailFragment extends CommonFragment {
                         if (mcstInvModel.getFlag() == ResultModel.SUCCESS) {
 
                             if (model.getFlag() == -1) {
-                                beg_barocde = " ";
+                                beg_barocde = "";
                                 Utils.Toast(mContext, "조회된 데이터가 없습니다.");
                                 mNoBtnPopup.hideDialog();
                                 return;
@@ -677,7 +681,12 @@ public class StoreSearchDetailFragment extends CommonFragment {
             @Override
             public void onFailure(Call<CstInvModel> call, Throwable t) {
                 Utils.LogLine(t.getMessage());
-                Utils.Toast(mContext, getString(R.string.error_network));
+                try {
+                    Utils.Toast(mContext, getString(R.string.error_network));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
         });
     }//Close
@@ -896,14 +905,19 @@ public class StoreSearchDetailFragment extends CommonFragment {
         List<CstInvModel.Item> items = mAdapter.getData();
 
         for (int i = 0; i < mAdapter.getItemCount(); i++) {
-            if (!mAdapter.itemsList.get(i).getSts().equals("대기")) {
-                JsonObject obj = new JsonObject();
+            //if (!mAdapter.itemsList.get(i).getSts().equals("대기")) {
+            JsonObject obj = new JsonObject();
 
-                obj.addProperty("itm_code", mAdapter.itemsList.get(i).getItm_code());
-                obj.addProperty("lot_no", mAdapter.itemsList.get(i).getLot_no1());
-                obj.addProperty("lot_no_mix", mAdapter.itemsList.get(i).getLot_no());
-                list.add(obj);
+            obj.addProperty("itm_code", mAdapter.itemsList.get(i).getItm_code());
+            obj.addProperty("lot_no", mAdapter.itemsList.get(i).getLot_no1());
+            obj.addProperty("lot_no_mix", mAdapter.itemsList.get(i).getLot_no());
+            if (!mAdapter.itemsList.get(i).getSts().equals("대기")) {
+                obj.addProperty("p_qty", 1);
+            }else {
+                obj.addProperty("p_qty", 0);
             }
+            list.add(obj);
+            //}
         }
 
         json.addProperty("p_wh_code", mOrder.getCst_code());
